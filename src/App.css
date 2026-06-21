@@ -1,0 +1,307 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f4f3ef;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Meiryo",
+    sans-serif;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+
+.header h1 {
+  font-size: 19px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.header p {
+  font-size: 12px;
+  color: #777;
+  margin-top: 3px;
+}
+
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1.2rem;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 4px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #ececea;
+  font-size: 14px;
+  cursor: pointer;
+  color: #666;
+  text-align: center;
+  user-select: none;
+}
+
+.tab.on {
+  background: #fff;
+  color: #1a1a1a;
+  border-color: #1a1a1a;
+  font-weight: 600;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.stat {
+  background: #ececea;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+}
+
+.stat-n {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.stat-l {
+  font-size: 12px;
+  color: #777;
+}
+
+.filter-row {
+  margin-bottom: 10px;
+}
+
+.filter-label {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 5px;
+}
+
+.pills {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  font-size: 12px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  color: #666;
+  background: #fff;
+  user-select: none;
+}
+
+.pill.on {
+  background: #ebe9fd;
+  color: #3c3489;
+  border-color: #b3acef;
+}
+
+.quiz-card {
+  background: #fff;
+  border: 1px solid #e5e3dd;
+  border-radius: 16px;
+  padding: 1.4rem 1.25rem;
+}
+
+.q-sub {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.q-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.q-cat {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: #e3f0fb;
+  color: #0c447c;
+  margin-bottom: 1rem;
+}
+
+.q-ask {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+}
+
+.q-opts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.q-opt {
+  padding: 11px 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  color: #1a1a1a;
+  text-align: left;
+}
+
+.q-opt:hover:not(:disabled) {
+  background: #f6f6f4;
+}
+
+.q-opt.correct {
+  background: #eaf3de;
+  border-color: #639922;
+  color: #27500a;
+}
+
+.q-opt.wrong {
+  background: #fcebeb;
+  border-color: #e24b4a;
+  color: #791f1f;
+}
+
+.q-opt.reveal {
+  background: #eaf3de;
+  border-color: #639922;
+  color: #27500a;
+}
+
+.q-opt:disabled {
+  cursor: default;
+}
+
+.result-msg {
+  text-align: center;
+  font-size: 13px;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.result-msg.ok {
+  background: #eaf3de;
+  color: #27500a;
+}
+
+.result-msg.ng {
+  background: #fcebeb;
+  color: #791f1f;
+}
+
+.next-btn {
+  width: 100%;
+  padding: 11px;
+  background: #1a1a1a;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.next-btn:hover {
+  background: #333;
+}
+
+.empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: #888;
+  font-size: 14px;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e5e3dd;
+}
+
+.menu-cat {
+  font-size: 13px;
+  font-weight: 700;
+  color: #555;
+  margin: 1.1rem 0 6px;
+  padding-left: 2px;
+}
+
+.menu-cat:first-child {
+  margin-top: 0;
+}
+
+.mcard {
+  background: #fff;
+  border: 1px solid #e5e3dd;
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 8px;
+}
+
+.mname {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+}
+
+.tags {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 11px;
+  padding: 2px 9px;
+  border-radius: 999px;
+}
+
+.tg {
+  background: #e3f0fb;
+  color: #0c447c;
+}
+
+.tb {
+  background: #ebe9fd;
+  color: #3c3489;
+}
+
+.ta {
+  background: #f1efe8;
+  color: #444441;
+}
+
+.ts {
+  background: #faeeda;
+  color: #633806;
+}
+
+.tn {
+  background: #eaf3de;
+  color: #27500a;
+}
