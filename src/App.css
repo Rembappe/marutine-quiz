@@ -147,6 +147,36 @@ body {
   margin-bottom: 1rem;
 }
 
+.step-progress {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 1.1rem;
+}
+
+.step-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ececea;
+  color: #999;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-dot.done {
+  background: #d8ead0;
+  color: #27500a;
+}
+
+.step-dot.current {
+  background: #1a1a1a;
+  color: #fff;
+}
+
 .q-ask {
   font-size: 14px;
   font-weight: 600;
