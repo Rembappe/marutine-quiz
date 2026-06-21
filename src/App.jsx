@@ -12,102 +12,100 @@ function pushLabel(n) {
   return `${n}プッシュ`;
 }
 
-// このドリンクに対して出題する4ステップを組み立てる
+function amountText(d) {
+  return d.pushes != null ? pushLabel(d.pushes) : d.amountLabel;
+}
+
+// このドリンクに対して出題する最大4ステップを組み立てる
 // ステップが成立しない項目（割り材が「なし」など）はスキップする
 function buildSteps(drink, pool) {
   const steps = [];
 
-  // Step 1: グラス
+  // Step: グラス
   {
     const correct = drink.glass;
     const others = [...new Set(pool.map((d) => d.glass).filter((g) => g !== correct))];
     const opts = shuffle([correct, ...shuffle(others).slice(0, 3)]);
-    steps.push({
-      key: "glass",
-      question: "グラスは？",
-      correct,
-      opts,
-      answerDisplay: correct,
-    });
-  }
-
-  // Step 2: ベースのお酒 + 量（プッシュ式ならプッシュ数、そうでなければ量表記）
-  {
-    if (drink.pushes != null) {
-      // ベースのお酒の正解値は「お酒名＋プッシュ数」をセットで問う
-      const correct = `${drink.base}　${pushLabel(drink.pushes)}`;
-      // 選択肢は「同じベースのお酒で違うプッシュ数」または「違うベースのお酒で同じプッシュ数」を混ぜて作る、
-      // ただし表記は必ず「お酒名＋プッシュ数」の組み合わせにする
-      const sameBaseOtherPushes = [...new Set(
-        pool.filter((d) => d.pushes != null && d.base === drink.base && d.pushes !== drink.pushes)
-          .map((d) => `${d.base}　${pushLabel(d.pushes)}`)
-      )];
-      const otherBaseSamePushes = [...new Set(
-        pool.filter((d) => d.pushes != null && d.base !== drink.base)
-          .map((d) => `${d.base}　${pushLabel(drink.pushes)}`)
-      )];
-      const otherBaseOtherPushes = [...new Set(
-        pool.filter((d) => d.pushes != null && d.base !== drink.base && d.pushes !== drink.pushes)
-          .map((d) => `${d.base}　${pushLabel(d.pushes)}`)
-      )];
-      let candidates = shuffle([...sameBaseOtherPushes, ...otherBaseSamePushes]);
-      if (candidates.length < 3) {
-        candidates = [...candidates, ...shuffle(otherBaseOtherPushes)];
-      }
-      const wrongs = [...new Set(candidates)].filter((c) => c !== correct).slice(0, 3);
-      // 万が一3つ揃わない場合のフォールバック（プッシュ数だけ変えたダミー）
-      let p = 1;
-      while (wrongs.length < 3 && p <= 4) {
-        const fallback = `${drink.base}　${pushLabel(p)}`;
-        if (fallback !== correct && !wrongs.includes(fallback)) wrongs.push(fallback);
-        p++;
-      }
-      const opts = shuffle([correct, ...wrongs]);
+    if (opts.length >= 2) {
       steps.push({
-        key: "base",
-        question: "ベースのお酒は？何プッシュ？",
+        key: "glass",
+        question: "グラスは？",
         correct,
         opts,
         answerDisplay: correct,
       });
-    } else {
-      const correct = `${drink.base}　${drink.amountLabel}`;
-      const sameBaseOtherAmount = [...new Set(
-        pool.filter((d) => d.pushes == null && d.base === drink.base && d.amountLabel !== drink.amountLabel)
-          .map((d) => `${d.base}　${d.amountLabel}`)
-      )];
-      const otherBaseSameAmount = [...new Set(
-        pool.filter((d) => d.pushes == null && d.base !== drink.base && d.amountLabel === drink.amountLabel)
-          .map((d) => `${d.base}　${d.amountLabel}`)
-      )];
-      const otherBaseOtherAmount = [...new Set(
-        pool.filter((d) => d.pushes == null && d.base !== drink.base && d.amountLabel !== drink.amountLabel)
-          .map((d) => `${d.base}　${d.amountLabel}`)
-      )];
-      let candidates = shuffle([...sameBaseOtherAmount, ...otherBaseSameAmount]);
-      if (candidates.length < 3) {
-        candidates = [...candidates, ...shuffle(otherBaseOtherAmount)];
-      }
-      const wrongs = [...new Set(candidates)].filter((c) => c !== correct).slice(0, 3);
-      const opts = shuffle([correct, ...wrongs]);
-      if (opts.length >= 2) {
-        steps.push({
-          key: "base",
-          question: "ベースのお酒は？量は？",
-          correct,
-          opts,
-          answerDisplay: correct,
-        });
-      }
     }
   }
 
-  // Step 3: 割り材（「なし」の場合はスキップ）
+  // Step: ベース（spirit→お酒名+量をセットで問う／syrupOnly→量だけ問う）
+  if (drink.baseType === "syrupOnly") {
+    const correct = amountText(drink);
+    // 同じ素材(base)を使う他のドリンクから違う量を集める。無ければ同confusionGroup内の他素材の量も混ぜる
+    const sameBaseOtherAmount = [...new Set(
+      pool.filter((d) => d.id !== drink.id && d.base === drink.base).map((d) => amountText(d))
+    )].filter((v) => v !== correct);
+    const sameGroupOtherAmount = [...new Set(
+      pool.filter((d) => d.id !== drink.id && d.confusionGroup === drink.confusionGroup).map((d) => amountText(d))
+    )].filter((v) => v !== correct);
+    let candidates = [...new Set([...sameBaseOtherAmount, ...sameGroupOtherAmount])];
+    const fallback = ["30ml", "45ml", "60ml", "80ml", "90ml", "1プッシュ", "2プッシュ"];
+    let fi = 0;
+    while (candidates.length < 3 && fi < fallback.length) {
+      const f = fallback[fi++];
+      if (f !== correct && !candidates.includes(f)) candidates.push(f);
+    }
+    const wrongs = shuffle(candidates).slice(0, 3);
+    const opts = shuffle([correct, ...wrongs]);
+    steps.push({
+      key: "base",
+      question: `${drink.base}は何mL使う？`,
+      correct,
+      opts,
+      answerDisplay: correct,
+    });
+  } else {
+    const correct = `${drink.base}　${amountText(drink)}`;
+    // 同じconfusionGroup内の他ドリンクから「ベース＋量」のセットを集める（紛らわしい選択肢を意図的に作る）
+    const groupCombos = [...new Set(
+      pool
+        .filter((d) => d.id !== drink.id && d.confusionGroup === drink.confusionGroup && d.baseType === "spirit")
+        .map((d) => `${d.base}　${amountText(d)}`)
+    )].filter((v) => v !== correct);
+    // 同じベースで違う量（プッシュ違いなど）も混ぜる
+    const sameBaseOtherAmount = [...new Set(
+      pool
+        .filter((d) => d.id !== drink.id && d.base === drink.base && d.baseType === "spirit")
+        .map((d) => `${d.base}　${amountText(d)}`)
+    )].filter((v) => v !== correct);
+    let candidates = [...new Set([...groupCombos, ...sameBaseOtherAmount])];
+    if (candidates.length < 3) {
+      // フォールバック：違うグループの他ドリンクから補充
+      const otherSpirits = [...new Set(
+        pool
+          .filter((d) => d.id !== drink.id && d.baseType === "spirit")
+          .map((d) => `${d.base}　${amountText(d)}`)
+      )].filter((v) => v !== correct && !candidates.includes(v));
+      candidates = [...candidates, ...shuffle(otherSpirits)];
+    }
+    const wrongs = [...new Set(candidates)].slice(0, 3);
+    const opts = shuffle([correct, ...wrongs]);
+    if (opts.length >= 2) {
+      steps.push({
+        key: "base",
+        question: "ベースのお酒は？何プッシュ（何mL）？",
+        correct,
+        opts,
+        answerDisplay: correct,
+      });
+    }
+  }
+
+  // Step: 割り材（「なし」の場合はスキップ）
   if (drink.mixer && drink.mixer !== "なし") {
     const correct = drink.mixer;
     const others = [...new Set(pool.map((d) => d.mixer).filter((m) => m && m !== "なし" && m !== correct))];
-    const optsPool = shuffle(others).slice(0, 3);
-    const opts = shuffle([correct, ...optsPool]);
+    const wrongs = shuffle(others).slice(0, 3);
+    const opts = shuffle([correct, ...wrongs]);
     if (opts.length >= 2) {
       steps.push({
         key: "mixer",
@@ -119,14 +117,13 @@ function buildSteps(drink, pool) {
     }
   }
 
-  // Step 4: その他必要なもの（レモン or 特記事項。両方あれば両方、無ければスキップ）
+  // Step: その他必要なもの（レモン or 特記事項。両方あれば両方、無ければスキップ）
   const extras = [];
   if (drink.lemon && drink.lemon !== "なし") extras.push(drink.lemon);
   if (drink.other) extras.push(drink.other);
 
   if (extras.length > 0) {
     const correct = extras.join(" / ");
-    // 選択肢候補：他のドリンクのlemon・other（空でないもの）から集める
     const otherExtras = [
       ...new Set(
         pool
@@ -142,13 +139,12 @@ function buildSteps(drink, pool) {
     ];
     const wrongs = shuffle(otherExtras).slice(0, 3);
     if (wrongs.length >= 1) {
-      // 「特になし」を選択肢に混ぜて、必要なものがあることを意識させる
-      const opts = shuffle([correct, ...wrongs, ...(wrongs.length < 3 ? ["特になし"] : [])]).slice(0, Math.max(2, wrongs.length + 1));
+      const opts = shuffle([correct, ...wrongs.slice(0, 3)]);
       steps.push({
         key: "extra",
         question: "そのほか必要なものは？",
         correct,
-        opts: shuffle([correct, ...wrongs.slice(0, 3)]),
+        opts,
         answerDisplay: correct,
       });
     }
@@ -180,7 +176,6 @@ function FlowQuiz() {
     setAnswered(null);
   }
 
-  // 初回
   useState(() => {
     startNewDrink(CATS);
   });
@@ -324,7 +319,7 @@ function MenuTab() {
               <div className="tags">
                 <span className="tag tg">{d.glass}</span>
                 <span className="tag tb">
-                  {d.base} {d.pushes != null ? `${d.pushes}プッシュ` : d.amountLabel}
+                  {d.base} {amountText(d)}
                 </span>
                 {d.mixer && d.mixer !== "なし" && <span className="tag tb">{d.mixer}</span>}
                 {d.lemon && d.lemon !== "なし" && <span className="tag tn">🍋 {d.lemon}</span>}
