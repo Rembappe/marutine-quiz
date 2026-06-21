@@ -45,7 +45,7 @@ export const DRINKS = [
   { id: 27, cat: "焼酎", name: "カルダモンロックソーダ割", glass: "ロゴ入りタンブラー", base: "カルダモンTAKE7", baseType: "spirit", confusionGroup: "shochuSpecial", pushes: null, amountLabel: "60ml", mixer: "ソーダ", lemon: "なし", other: "" },
   { id: 28, cat: "梅酒・カシス", name: "南高梅酒（ロック）", glass: "ロックグラス", base: "南高梅酒", baseType: "spirit", confusionGroup: "umeBase", pushes: 2, amountLabel: null, mixer: "なし", lemon: "なし", other: "氷5個" },
   { id: 29, cat: "梅酒・カシス", name: "南高梅酒水割り", glass: "ロゴ入りタンブラー", base: "南高梅酒", baseType: "spirit", confusionGroup: "umeBase", pushes: 2, amountLabel: null, mixer: "水", lemon: "なし", other: "" },
-  { id: 30, cat: "梅酒・カシス", name: "南高梅酒お湯割り", glass: "ロゴ入りタンブラー", base: "南高梅酒", baseType: "spirit", confusionGroup: "umeBase", pushes: 2, amountLabel: null, mixer: "お湯", lemon: "なし", other: "" },
+  { id: 30, cat: "梅酒・カシス", name: "南高梅酒お湯割り", glass: "ロックグラス", base: "南高梅酒", baseType: "spirit", confusionGroup: "umeBase", pushes: 2, amountLabel: null, mixer: "お湯", lemon: "なし", other: "" },
   { id: 31, cat: "梅酒・カシス", name: "南高梅酒ソーダ割り", glass: "ロゴ入りタンブラー", base: "南高梅酒", baseType: "spirit", confusionGroup: "umeBase", pushes: 2, amountLabel: null, mixer: "ソーダ", lemon: "なし", other: "" },
   { id: 32, cat: "梅酒・カシス", name: "酒場のカシオレ", glass: "ロゴ入りタンブラー", base: "カシス", baseType: "spirit", confusionGroup: "liqueurFruit", pushes: 1, amountLabel: null, mixer: "オレンジジュース", lemon: "なし", other: "" },
   { id: 33, cat: "ワイン", name: "コップワイン（赤・白）", glass: "カップ", base: "ワイン", baseType: "spirit", confusionGroup: "wine", pushes: null, amountLabel: "既製品", mixer: "なし", lemon: "なし", other: "客席で蓋を開ける" },
